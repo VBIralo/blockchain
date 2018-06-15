@@ -1,4 +1,6 @@
 var md5 = require('crypto-md5');
+var fs = require('fs');
+var chains = require(__dirname + "/chains.json");
 
 class Block {
     constructor(data) {
@@ -26,7 +28,11 @@ class Block {
 
 class Blockchain {
     constructor() {
-        this.chain = [this.createGenesisBlock()];
+        if (chains.length == 0) {
+            this.chain = [this.createGenesisBlock()];
+        } else {
+            this.chain = chains;
+        };
         this.pow = 1;
     }
 
@@ -39,7 +45,11 @@ class Blockchain {
     }
 
     getBlocks() {
-        return this.chain.map(a=>a)
+        return this.chain.map(a => a)
+    }
+
+    saveBlocks() {
+        return fs.writeFileSync(__dirname + "/chains.json", JSON.stringify(this.chain, null, "\t"));
     }
 
     addNewBlock(newBlock) {
@@ -118,6 +128,7 @@ bc.addNewBlock(new Block([new Transaction('Lesha', 'Ilya', 950)]))
 bc.addNewBlock(new Block([new Transaction('Ilya', 'Annya', 700)]))
 bc.addNewBlock(new Block([new Transaction('Annya', 'Dima', 20)]))
 
-console.log("VALIDATION: " + bc.isChainValid())
-//console.log(bc.getBlocks().map(a=>a.data))
+bc.saveBlocks()
 
+//console.log("VALIDATION: " + bc.isChainValid())
+//console.log(bc.getBlocks().map(a=>a.data))
