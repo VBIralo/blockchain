@@ -3,96 +3,48 @@
 		"index": 0,
 		"data": [
 			{
-				"from": "",
-				"to": "",
-				"amount": 1000,
-				"timestamp": 1529022259045,
-				"hash": "a9b7ba70783b617e9998dc4dd82eb3c5"
+				"from": "Genesis Block",
+				"to": "Genesis Block",
+				"amount": 0,
+				"timestamp": 1529517048759,
+				"hash": "ff6447c052e677e91e376175edeb8c51"
 			}
 		],
 		"previousHash": "",
-		"timestamp": 1529022259046,
+		"timestamp": 1529517048759,
 		"nonce": 0,
-		"hash": "642bf1cd6e3ff0c2a962614ceac7a0b6"
+		"hash": "f1b4fcac9e49a2afc10ad1fff6ae46e8"
 	},
 	{
 		"index": 1,
 		"data": [
 			{
 				"from": "Vlad",
-				"to": "Sasha",
-				"amount": 1200,
-				"timestamp": 1529022259046,
-				"hash": "5dba463229aadc8e397be2e76666ebbc"
+				"to": "Kirill",
+				"amount": "5000",
+				"timestamp": 1529517081274,
+				"hash": "f4b9d8c2e0c6dbbb3e84c1f6f2fbafcb"
 			}
 		],
-		"previousHash": "642bf1cd6e3ff0c2a962614ceac7a0b6",
-		"timestamp": 1529022259046,
-		"nonce": 23,
-		"hash": "05281c4d0807b2948828b15d6ced597c"
+		"previousHash": "f1b4fcac9e49a2afc10ad1fff6ae46e8",
+		"timestamp": 1529517081274,
+		"nonce": 934,
+		"hash": "000923908c286ab502aa0850759aa7d9"
 	},
 	{
 		"index": 2,
 		"data": [
 			{
-				"from": "Sasha",
-				"to": "Lesha",
-				"amount": 1000,
-				"timestamp": 1529022259052,
-				"hash": "b6fa6635e1a2c6755df064856eb27b59"
+				"from": "Vlad",
+				"to": "Vladimir",
+				"amount": "8000000000",
+				"timestamp": 1529517243559,
+				"hash": "48b5f6b6a3c028f757b6a626b00535ba"
 			}
 		],
-		"previousHash": "05281c4d0807b2948828b15d6ced597c",
-		"timestamp": 1529022259052,
-		"nonce": 11,
-		"hash": "0e8e66041faac247afec42e1b4044bb7"
-	},
-	{
-		"index": 3,
-		"data": [
-			{
-				"from": "Lesha",
-				"to": "Ilya",
-				"amount": 950,
-				"timestamp": 1529022259053,
-				"hash": "4da41afd0b825b016c930a8c1704b132"
-			}
-		],
-		"previousHash": "0e8e66041faac247afec42e1b4044bb7",
-		"timestamp": 1529022259053,
-		"nonce": 42,
-		"hash": "0eeb51815d1f1a167c8a118799ebec25"
-	},
-	{
-		"index": 4,
-		"data": [
-			{
-				"from": "Ilya",
-				"to": "Annya",
-				"amount": 700,
-				"timestamp": 1529022259055,
-				"hash": "e3c0d21fbc088f4803577679e6088ba7"
-			}
-		],
-		"previousHash": "0eeb51815d1f1a167c8a118799ebec25",
-		"timestamp": 1529022259055,
-		"nonce": 40,
-		"hash": "0e536fc5510429ae5d4c9c993ec40334"
-	},
-	{
-		"index": 5,
-		"data": [
-			{
-				"from": "Annya",
-				"to": "Dima",
-				"amount": 20,
-				"timestamp": 1529022259055,
-				"hash": "fc37ecda85367b24db94d257b867d0a2"
-			}
-		],
-		"previousHash": "0e536fc5510429ae5d4c9c993ec40334",
-		"timestamp": 1529022259055,
-		"nonce": 41,
-		"hash": "02991f5658c6fc10a92a113861ffc915"
+		"previousHash": "000923908c286ab502aa0850759aa7d9",
+		"timestamp": 1529517243559,
+		"nonce": 9604,
+		"hash": "0004fdcd2768e99ffe9a069ec61b3582"
 	}
 ]

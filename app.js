@@ -1,134 +1,67 @@
-var md5 = require('crypto-md5');
-var fs = require('fs');
-var chains = require(__dirname + "/chains.json");
+const express = require('express');
+const http = require('http');
+const url = require('url');
+const bodyParser = require('body-parser');
+const WebSocket = require('ws');
+const {
+    Block,
+    Blockchain,
+    Transaction,
+    validateChain,
+    findTx
+} = require('./api.js')
 
-class Block {
-    constructor(data) {
-        this.index = 0;
-        this.data = data;
-        this.previousHash = '';
-        this.timestamp = Date.now();
-        this.nonce = 0;
-        this.hash = this.CalcHash();
-    }
+let server_port = process.env.SERVER_PORT || 8080;
+let blockchain = new Blockchain;
+let transactions = [];
 
-    CalcHash() {
-        return md5((this.index + JSON.stringify(this.data) + this.previousHash + this.timestamp + this.nonce).toString(), 'hex');
-    }
+// WEB
+const app = express();
 
-    mineBlock(difficulty) {
-        console.log('Mining...')
-        while (this.hash.substring(0, difficulty) !== '0'.repeat(difficulty)) {
-            this.nonce++;
-            this.hash = this.CalcHash();
-        }
-        return console.log(`Block #${this.index} | ${this.data[0].from} -> ${this.data[0].to} | ${this.data[0].amount} \nBlock Hash: ${this.hash}\n---------------`)
+app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.post("/addtrans", function (req, res) {
+    if(!req.body) return response.sendStatus(400);
+    var r = req.body;
+    addTransaction(r.from, r.to, r.amount);
+    transactions.push(blockchain.getLatestBlock().data[0])
+    res.send(blockchain.getLatestBlock());
+});
+
+app.post("/checktrans", function (req, res) {
+    if(!req.body) return response.sendStatus(400);
+    var r = req.body;
+    
+    res.send(findTx(blockchain, {from:r.from, to:r.to, amount:r.amount})?"This is transaction is valid":"This is transaction is invalid");
+}); 
+
+app.get('/', (req, res) => res.send('<a href="/blocks" target="_blank">blocks</a><br><a href="/transactions" target="_blank">transactions</a><br><a href="/addtrans.html" target="_blank">addtrans</a><br><a href="/checktrans.html" target="_blank">checktrans</a><br><a href="/validate" target="_blank">validate</a>'));
+app.get('/blocks', (req, res) => res.send(blockchain.chain.map(d => `Block: #${d.index} <br> ${d.data[0].from} -> ${d.data[0].to} <br> Amount: ${d.data[0].amount}<br>${d.hash}<br><br>`).join('\n')));
+app.get('/transactions', (req, res) => res.send(JSON.stringify(transactions)));
+app.get('/validate', (req, res) => {
+    res.send(validateChain(blockchain.chain, blockchain.pow)?"This chein is valid":"This chein is invalid")
+});
+
+let addTransaction = (from, to, amount) => {
+    blockchain.addNewBlock(
+        new Block(
+            [new Transaction(from, to, amount)]
+        )
+    )
+}
+
+let replaceChain = (newBlocks) => {
+    if (validateChain(newBlocks, blockchain.pow) && newBlocks.length > blockchain.length) {
+        blockchain.chain = newBlocks;
+    } else {
+        console.log('Received blockchain invalid');
     }
 };
 
-class Blockchain {
-    constructor() {
-        if (chains.length == 0) {
-            this.chain = [this.createGenesisBlock()];
-        } else {
-            this.chain = chains;
-        };
-        this.pow = 1;
-    }
-
-    createGenesisBlock() {
-        return new Block([new Transaction('', '', 1000)]);
-    }
-
-    getLatestBlock() {
-        return this.chain[this.chain.length - 1];
-    }
-
-    getBlocks() {
-        return this.chain.map(a => a)
-    }
-
-    saveBlocks() {
-        return fs.writeFileSync(__dirname + "/chains.json", JSON.stringify(this.chain, null, "\t"));
-    }
-
-    addNewBlock(newBlock) {
-        newBlock.index = this.getLatestBlock().index + 1;
-        newBlock.previousHash = this.getLatestBlock().hash;
-        newBlock.mineBlock(this.pow);
-        this.chain.push(newBlock);
-    }
-
-    isChainValid() {
-        return validateChain(this.chain, this.pow)
-    }
-
-    findTx(txf) {
-        return this.chain.some((block) => {
-            return findTransaction(block.data, txf);
-        })
-    }
-}
-
-class Transaction {
-    constructor(from, to, amount) {
-        this.from = from;
-        this.to = to;
-        this.amount = amount;
-        this.timestamp = Date.now();
-        this.hash = this.CalcHash();
-    }
-    CalcHash() {
-        return md5((this.from + this.to + this.amount).toString(), 'hex');
-    }
-}
-
-let findTransaction = (txs, txf) => {
-    return txs.find((tx) => tx.hash == txf.hash);
-}
-
-let validateChain = (chain, pow) => {
-    return chain.every((currentBlock) => {
-        if (currentBlock.index > 0) {
-            const previousBlock = chain[currentBlock.index - 1];
-
-            if (previousBlock.index + 1 !== currentBlock.index) {
-                return false;
-            }
-            if (currentBlock.previousHash !== previousBlock.hash) {
-                return false;
-            }
-            if (currentBlock.hash.substring(0, pow) !== '0'.repeat(pow)) {
-                return false;
-            }
-        }
-
-        if (currentBlock.hash !== currentBlock.CalcHash()) {
-            return false;
-        }
-
-        return true;
-    })
-}
-
-module.exports = {
-    Blockchain,
-    Block,
-    Transaction
-}
-
-module.exports.findTransaction = findTransaction;
-module.exports.validateChain = validateChain;
-
-var bc = new Blockchain;
-
-bc.addNewBlock(new Block([new Transaction('Vlad', 'Sasha', 1200)]))
-bc.addNewBlock(new Block([new Transaction('Sasha', 'Lesha', 1000)]))
-bc.addNewBlock(new Block([new Transaction('Lesha', 'Ilya', 950)]))
-bc.addNewBlock(new Block([new Transaction('Ilya', 'Annya', 700)]))
-bc.addNewBlock(new Block([new Transaction('Annya', 'Dima', 20)]))
-
-bc.saveBlocks()
-
-//console.log("VALIDATION: " + bc.isChainValid())
-//console.log(bc.getBlocks().map(a=>a.data))
+//Init Node
+const server = http.createServer(app);
+server.listen(server_port);
