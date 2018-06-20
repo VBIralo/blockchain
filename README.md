@@ -1,6 +1,5 @@
 <h1 align="center">A minimal blockchain with web-interface.</h1>
 
-<br>
 
 ## 🎉 Features
 - 💎 Blocks with index, hash, data, and timestamp.
@@ -30,8 +29,11 @@ $ npm install
 $ npm start
 ```
 
+<<<<<<< HEAD
 Go to [localhost:8080/](http://localhost:8080/)
 
+=======
+>>>>>>> master
 ## 🎫 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
