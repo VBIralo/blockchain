@@ -28,7 +28,7 @@ class Block {
 class Blockchain {
     constructor() {
         this.chain = sync();
-        this.pow = 3;
+        this.pow = 4;
     }
 
     getLatestBlock() {
@@ -136,6 +136,3 @@ module.exports = {
 module.exports.findTransaction = findTransaction;
 module.exports.validateChain = validateChain;
 module.exports.findTx = findTx;
-
-//console.log("VALIDATION: " + bc.isChainValid())
-//console.log(bc.getBlocks().map(a=>a.data))
